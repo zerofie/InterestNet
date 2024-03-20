@@ -1,0 +1,46 @@
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import HomePage from "scenes/homePage";
+import LoginPage from "scenes/loginPage";
+import ProfilePage from "scenes/profilePage";
+import InterestsPage from "scenes/interestsPage";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+import { themeSettings } from "./theme";
+import { useState } from "react";
+import InterestPostsPage from "scenes/widgets/InterestPostsPage";
+function App() {
+ 
+  const mode = useSelector((state) => state.mode);
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const isAuth = Boolean(useSelector((state) => state.token));
+
+  return (
+    <div className="app">
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route
+              path="/interests"
+              element={isAuth ? <InterestsPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/home"
+              element={isAuth ? <HomePage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/profile/:userId"
+              element={isAuth ? <ProfilePage /> : <Navigate to="/" />}
+            />
+             <Route path="/interest-posts" element={<InterestPostsPage />} />
+          </Routes>
+        </ThemeProvider>
+      </BrowserRouter>
+    </div>
+  );
+}
+
+export default App;
